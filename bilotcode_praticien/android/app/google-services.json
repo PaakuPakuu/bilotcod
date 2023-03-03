@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "693528374203",
+    "project_id": "bilotcod-8d38b",
+    "storage_bucket": "bilotcod-8d38b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:693528374203:android:0dc11ec39411be84b3f29e",
+        "android_client_info": {
+          "package_name": "com.example.bilotcode_praticien"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "693528374203-d6rhlo0kabbtq8l2rujv6lsvb8t42l1i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE2OIPiknjG7Y9zVcKf-gTa8KHJx5LI7Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "693528374203-d6rhlo0kabbtq8l2rujv6lsvb8t42l1i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
