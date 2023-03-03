@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'firebase_options.dart';
-import 'models/patient.dart';
 import 'models/rdv.dart';
 
 class ApplicationState extends ChangeNotifier {
@@ -24,10 +23,13 @@ class ApplicationState extends ChangeNotifier {
 
   Future<void> loadRdvs() async {
     print('Loading...');
-    await FirebaseFirestore.instance.collection('rdvs').get().then((value) {
+    await FirebaseFirestore.instance
+        .collection('rdvs')
+        .get()
+        .then((value) async {
       _rdvs.clear();
       for (var doc in value.docs) {
-        final Rdv rdv = Rdv.fromFirestore(doc.id, doc.data());
+        final Rdv rdv = await Rdv.fromFirestore(doc.id, doc.data());
         _rdvs.add(rdv);
         print('Document ${doc.id} => ${doc.data()}');
       }
@@ -37,8 +39,8 @@ class ApplicationState extends ChangeNotifier {
     print('Loaded');
   }
 
-  void removeRdv(Rdv rdv) {
+  void removeRdv(Rdv rdv) async {
     _rdvs.remove(rdv);
-    FirebaseFirestore.instance.collection('rdvs').doc(rdv.id).delete();
+    await FirebaseFirestore.instance.collection('rdvs').doc(rdv.id).delete();
   }
 }
