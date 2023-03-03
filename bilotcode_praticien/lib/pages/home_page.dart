@@ -25,6 +25,7 @@ class HomePageState extends State<HomePage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Bilotcod'),
+          elevation: 0,
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -40,12 +41,19 @@ class HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              Expanded(
-                child: IndexedStack(
-                  index: _currentIndex,
-                  children: _pages,
-                ),
-              ),
+              if (context.watch<ApplicationState>().rdvs.length > 0)
+                Expanded(
+                  child: IndexedStack(
+                    index: _currentIndex,
+                    children: _pages,
+                  ),
+                )
+              else
+                const Expanded(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
             ],
           ),
         ),
@@ -73,8 +81,7 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  void _refreshData() async {
+  Future<void> _refreshData() async {
     await context.read<ApplicationState>().loadRdvs();
-    setState(() {});
   }
 }

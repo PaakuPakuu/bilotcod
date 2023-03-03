@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   go_router: ^6.2.0
+  intl: ^0.18.0
   provider: ^6.0.5
   syncfusion_flutter_calendar: ^20.4.52
 

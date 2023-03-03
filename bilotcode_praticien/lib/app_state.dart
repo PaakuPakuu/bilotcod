@@ -10,37 +10,39 @@ class ApplicationState extends ChangeNotifier {
     init();
   }
 
+  final List<Rdv> _rdvs = <Rdv>[];
+
+  get rdvs => _rdvs;
+  get praticien => null;
+
   Future<void> init() async {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
 
-    loadRdvs();
+    await loadRdvs();
   }
 
-  final List<Rdv> _rdvs = <Rdv>[];
-
-  get rdvs => _rdvs;
-
   Future<void> loadRdvs() async {
-    print('Loading...');
+    _rdvs.clear();
+    notifyListeners();
     await FirebaseFirestore.instance
         .collection('rdvs')
+        .where('est_annule', isEqualTo: false)
         .get()
         .then((value) async {
-      _rdvs.clear();
       for (var doc in value.docs) {
         final Rdv rdv = await Rdv.fromFirestore(doc.id, doc.data());
         _rdvs.add(rdv);
-        print('Document ${doc.id} => ${doc.data()}');
       }
       notifyListeners();
     });
-
-    print('Loaded');
   }
 
-  void removeRdv(Rdv rdv) async {
+  Future<void> removeRdv(Rdv rdv) async {
     _rdvs.remove(rdv);
-    await FirebaseFirestore.instance.collection('rdvs').doc(rdv.id).delete();
+    await FirebaseFirestore.instance.collection('rdvs').doc(rdv.id).set({
+      'est_annule': true,
+    }, SetOptions(merge: true));
+    notifyListeners();
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:bilotcode_praticien/models/patient.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -8,12 +6,12 @@ class Rdv {
   Patient patient;
   DateTime datetime;
   int dureeMinutes;
+  bool isCancelled;
 
-  Rdv(this.id, this.patient, this.datetime, this.dureeMinutes);
+  Rdv(this.id, this.patient, this.datetime, this.dureeMinutes,
+      this.isCancelled);
 
   static Future<Rdv> fromFirestore(String id, Map<String, dynamic> data) async {
-    // random guid string
-    final String guid = Random().nextInt(100000).toString();
     final DocumentReference patientRef = data['patient'];
     final DocumentSnapshot<Object?> patientDoc = await patientRef.get();
     final Map<String, dynamic> patientData =
@@ -21,9 +19,10 @@ class Rdv {
 
     return Rdv(
       id,
-      Patient.fromFirestore(guid, patientData),
+      Patient.fromFirestore(patientDoc.id, patientData),
       (data['datetime'] as Timestamp).toDate(),
       data['duree_min'] as int,
+      data['est_annule'] as bool,
     );
   }
 }
