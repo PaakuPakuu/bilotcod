@@ -5,11 +5,12 @@ class Rdv {
   String id;
   Patient patient;
   DateTime datetime;
-  int dureeMinutes;
+  int durationMinutes;
   bool isCancelled;
+  String commentaire;
 
-  Rdv(this.id, this.patient, this.datetime, this.dureeMinutes,
-      this.isCancelled);
+  Rdv(this.id, this.patient, this.datetime, this.durationMinutes,
+      this.isCancelled, this.commentaire);
 
   static Future<Rdv> fromFirestore(String id, Map<String, dynamic> data) async {
     final DocumentReference patientRef = data['patient'];
@@ -23,6 +24,7 @@ class Rdv {
       (data['datetime'] as Timestamp).toDate(),
       data['duree_min'] as int,
       data['est_annule'] as bool,
+      data['commentaire'] as String,
     );
   }
 }

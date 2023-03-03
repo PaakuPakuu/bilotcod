@@ -1,4 +1,5 @@
 import 'package:bilotcode_praticien/app_state.dart';
+import 'package:bilotcode_praticien/models/rdv.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +23,8 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Rdv> rdvs = context.watch<ApplicationState>().rdvs;
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Bilotcod'),
@@ -41,13 +44,15 @@ class HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
+              const Divider(),
+              Text("${rdvs.length} rendez-vous aujourd'hui"),
               if (context.watch<ApplicationState>().isDataLoading)
                 const Expanded(
                   child: Center(
                     child: CircularProgressIndicator(),
                   ),
                 )
-              else if (context.watch<ApplicationState>().rdvs.length > 0)
+              else if (rdvs.isNotEmpty)
                 Expanded(
                   child: IndexedStack(
                     index: _currentIndex,

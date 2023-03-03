@@ -5,6 +5,8 @@ class Patient {
   int age;
   String sexe;
 
+  get civilite => sexe == 'M' ? 'M.' : 'Mme';
+
   Patient(this.id, this.nom, this.prenom, this.age, this.sexe);
 
   factory Patient.fromFirestore(String id, Map<String, dynamic> data) {

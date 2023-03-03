@@ -30,6 +30,7 @@ class ApplicationState extends ChangeNotifier {
     notifyListeners();
     await FirebaseFirestore.instance
         .collection('rdvs')
+        .where('est_annule', isEqualTo: false)
         .where('datetime',
             // Enlève 1 jour pour assurer d'avoir les rdvs du jour (même passés)
             isGreaterThan: Timestamp.fromDate(

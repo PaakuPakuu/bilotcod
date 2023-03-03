@@ -33,11 +33,9 @@ class CalendrierState extends State<Calendrier> {
     for (var rdv in rdvs) {
       appointments.add(Appointment(
         startTime: rdv.datetime,
-        endTime: rdv.datetime.add(Duration(minutes: rdv.dureeMinutes)),
+        endTime: rdv.datetime.add(Duration(minutes: rdv.durationMinutes)),
         subject: '${rdv.patient.nom} ${rdv.patient.prenom}',
-        color: //random color
-            Color((Random().nextDouble() * 0xFFFFFF).toInt() << 0)
-                .withOpacity(1.0),
+        color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
       ));
     }
 
