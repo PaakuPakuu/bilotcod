@@ -41,7 +41,13 @@ class HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              if (context.watch<ApplicationState>().rdvs.length > 0)
+              if (context.watch<ApplicationState>().isDataLoading)
+                const Expanded(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              else if (context.watch<ApplicationState>().rdvs.length > 0)
                 Expanded(
                   child: IndexedStack(
                     index: _currentIndex,
@@ -49,11 +55,7 @@ class HomePageState extends State<HomePage> {
                   ),
                 )
               else
-                const Expanded(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                )
+                const Expanded(child: Center(child: Text('Aucun rendez-vous'))),
             ],
           ),
         ),

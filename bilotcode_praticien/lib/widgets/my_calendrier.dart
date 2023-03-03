@@ -18,7 +18,7 @@ class CalendrierState extends State<Calendrier> {
   @override
   Widget build(BuildContext context) {
     return SfCalendar(
-      view: CalendarView.month,
+      view: CalendarView.week,
       dataSource:
           _getCalendarDataSource(context.watch<ApplicationState>().rdvs),
       monthViewSettings: const MonthViewSettings(

@@ -11,6 +11,7 @@ class ApplicationState extends ChangeNotifier {
   }
 
   final List<Rdv> _rdvs = <Rdv>[];
+  bool isDataLoading = false;
 
   get rdvs => _rdvs;
   get praticien => null;
@@ -22,18 +23,24 @@ class ApplicationState extends ChangeNotifier {
     await loadRdvs();
   }
 
+  /// Charge les rendez-vous du jour
   Future<void> loadRdvs() async {
+    isDataLoading = true;
     _rdvs.clear();
     notifyListeners();
     await FirebaseFirestore.instance
         .collection('rdvs')
-        .where('est_annule', isEqualTo: false)
+        .where('datetime',
+            // Enlève 1 jour pour assurer d'avoir les rdvs du jour (même passés)
+            isGreaterThan: Timestamp.fromDate(
+                DateTime.now().add(const Duration(days: -1))))
         .get()
         .then((value) async {
       for (var doc in value.docs) {
         final Rdv rdv = await Rdv.fromFirestore(doc.id, doc.data());
         _rdvs.add(rdv);
       }
+      isDataLoading = false;
       notifyListeners();
     });
   }
