@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
-  _MyAppState createState() => _MyAppState();
+  MyAppState createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-  final List<String> items = List.generate(100, (index) => "Dr Jean Bonnot $index - Arnaqueur généraliste");
+class MyAppState extends State<MyApp> {
+  final List<String> items = List.generate(
+      100, (index) => "Dr Jean Bonnot $index - Arnaqueur généraliste");
   List<String> filteredItems = [];
   TextEditingController searchController = TextEditingController();
 
@@ -56,7 +59,7 @@ class _MyAppState extends State<MyApp> {
       title: 'Liste et champ de recherche',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Liste et champ de recherche'),
+          title: const Text('Liste et champ de recherche'),
         ),
         body: Column(
           children: <Widget>[
@@ -64,21 +67,21 @@ class _MyAppState extends State<MyApp> {
               padding: const EdgeInsets.all(8.0),
               child: TextField(
                 controller: searchController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Rechercher...',
                 ),
               ),
             ),
             Expanded(
               child: GridView.count(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 crossAxisCount: 1,
                 childAspectRatio: 3,
                 children: filteredItems.map((item) {
                   return GestureDetector(
                     onTap: () => navigateToItemPage(item),
                     child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 8),
+                      margin: const EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(8),
@@ -127,7 +130,7 @@ class ItemPage extends StatelessWidget {
       body: Center(
         child: Text(
           item,
-          style: TextStyle(fontSize: 24),
+          style: const TextStyle(fontSize: 24),
         ),
       ),
     );
