@@ -2,18 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../models/rdv.dart';
 
-class DetailRdvPage extends StatefulWidget {
+class DetailRdvPage extends StatelessWidget {
   final Rdv rdv;
   const DetailRdvPage(this.rdv, {super.key});
 
   @override
-  DetailRdvPageState createState() => DetailRdvPageState();
-}
-
-class DetailRdvPageState extends State<DetailRdvPage> {
-  @override
   Widget build(BuildContext context) {
-    final patient = widget.rdv.patient;
+    final patient = rdv.patient;
 
     return Scaffold(
       appBar: AppBar(
@@ -29,12 +24,12 @@ class DetailRdvPageState extends State<DetailRdvPage> {
               'Patient: ${patient.nom} ${patient.prenom}',
             ),
             Text(
-              'Date: ${widget.rdv.datetime}',
+              'Date: ${rdv.datetime}',
             ),
             Text(
-              'Durée: ${widget.rdv.durationMinutes} minutes',
+              'Durée: ${rdv.durationMinutes} minutes',
             ),
-            Text('Commentaire: ${widget.rdv.commentaire}'),
+            Text('Commentaire: ${rdv.commentaire}'),
           ],
         ),
       ),

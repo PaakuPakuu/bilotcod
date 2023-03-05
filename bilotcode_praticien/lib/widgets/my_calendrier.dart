@@ -11,10 +11,10 @@ class Calendrier extends StatefulWidget {
   const Calendrier({super.key});
 
   @override
-  CalendrierState createState() => CalendrierState();
+  State<Calendrier> createState() => _CalendrierState();
 }
 
-class CalendrierState extends State<Calendrier> {
+class _CalendrierState extends State<Calendrier> {
   @override
   Widget build(BuildContext context) {
     return SfCalendar(

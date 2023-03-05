@@ -8,10 +8,10 @@ class ListPage extends StatefulWidget {
   const ListPage({super.key});
 
   @override
-  ListPageState createState() => ListPageState();
+  State<ListPage> createState() => _ListPageState();
 }
 
-class ListPageState extends State<ListPage> {
+class _ListPageState extends State<ListPage> {
   @override
   Widget build(BuildContext context) {
     return ListView(
