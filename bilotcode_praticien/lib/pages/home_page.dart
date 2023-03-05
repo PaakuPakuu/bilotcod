@@ -3,6 +3,7 @@ import 'package:bilotcode_praticien/models/rdv.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/praticien.dart';
 import 'calendar_page.dart';
 import 'list_page.dart';
 
@@ -23,48 +24,87 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Rdv> rdvs = context.watch<ApplicationState>().rdvs;
+    final List<Rdv> rdvs =
+        context.watch<ApplicationState>().selectedPraticienRdvs;
 
     return Scaffold(
         appBar: AppBar(
           title: const Text('Bilotcod'),
           elevation: 0,
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: [
-                  const Text('Vos rendez-vous'),
-                  const Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.refresh),
-                    onPressed: _refreshData,
-                  ),
-                ],
+        body: !context.watch<ApplicationState>().arePraticiensLoading
+            ? _getBody(context, rdvs)
+            : const Center(
+                child: CircularProgressIndicator(),
               ),
-              const Divider(),
-              Text("${rdvs.length} rendez-vous aujourd'hui"),
-              if (context.watch<ApplicationState>().isDataLoading)
-                const Expanded(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                )
-              else if (rdvs.isNotEmpty)
-                Expanded(
-                  child: IndexedStack(
-                    index: _currentIndex,
-                    children: _pages,
-                  ),
-                )
-              else
-                const Expanded(child: Center(child: Text('Aucun rendez-vous'))),
+        bottomNavigationBar: _bottomNavBar());
+  }
+
+  Padding _getBody(BuildContext context, List<Rdv> rdvs) {
+    final int todayRdvsCount = rdvs.where((Rdv rdv) => rdv.isToday).length;
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: <Widget>[
+          Row(
+            children: [
+              const Text('Rendez-vous de'),
+              Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: _praticiensDropdownList(context)),
+              const Spacer(),
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: _refreshData,
+              ),
             ],
           ),
-        ),
-        bottomNavigationBar: _bottomNavBar());
+          const Divider(),
+          Text("$todayRdvsCount rendez-vous aujourd'hui"),
+          if (context.watch<ApplicationState>().areRdvsLoading)
+            const Expanded(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          else if (rdvs.isNotEmpty)
+            Expanded(
+              child: IndexedStack(
+                index: _currentIndex,
+                children: _pages,
+              ),
+            )
+          else
+            const Expanded(child: Center(child: Text('Aucun rendez-vous'))),
+        ],
+      ),
+    );
+  }
+
+  DropdownButton<Praticien> _praticiensDropdownList(BuildContext context) {
+    final List<Praticien> praticiens =
+        context.watch<ApplicationState>().praticiens;
+    final Praticien? selectedPraticien =
+        context.watch<ApplicationState>().selectedPraticien;
+
+    return DropdownButton<Praticien>(
+        value: context.read<ApplicationState>().selectedPraticien,
+        hint: const Text('Sélectionnez un praticien'),
+        onChanged: (Praticien? value) {
+          if (value != selectedPraticien) {
+            setState(() {
+              context.read<ApplicationState>().selectedPraticien = value!;
+            });
+          }
+        },
+        items: praticiens.map((Praticien praticien) {
+          return DropdownMenuItem<Praticien>(
+            value: praticien,
+            child: Text(
+                'Dr ${praticien.nom} ${praticien.prenom} - ${praticien.specialite}'),
+          );
+        }).toList());
   }
 
   BottomNavigationBar _bottomNavBar() {

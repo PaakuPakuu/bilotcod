@@ -20,7 +20,8 @@ class ListPageState extends State<ListPage> {
   }
 
   List<PraticienListItem> _getRdvs() {
-    final List<Rdv> rdvs = context.watch<ApplicationState>().rdvs;
+    final List<Rdv> rdvs =
+        context.watch<ApplicationState>().selectedPraticienRdvs;
     return List.generate(rdvs.length, (int index) {
       return PraticienListItem(rdv: rdvs[index]);
     });
