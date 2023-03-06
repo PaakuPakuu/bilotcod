@@ -18,6 +18,13 @@ class _CalendrierState extends State<Calendrier> {
   @override
   Widget build(BuildContext context) {
     return SfCalendar(
+      minDate: DateTime.now().subtract(const Duration(days: 30)),
+      maxDate: DateTime.now().add(const Duration(days: 365)),
+      allowedViews: const <CalendarView>[
+        CalendarView.week,
+        CalendarView.day,
+        CalendarView.month
+      ],
       view: CalendarView.week,
       dataSource: _getCalendarDataSource(
           context.watch<ApplicationState>().selectedPraticienRdvs),
