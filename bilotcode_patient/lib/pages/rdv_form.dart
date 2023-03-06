@@ -198,6 +198,7 @@ class _AppointmentFormState extends State<AppointmentForm> {
       patient.id = newPatientId;
       widget.rdv.patient = patient;
       await appState.addRdv(widget.rdv);
+      appState.loadRdvs();
 
       final navState = Navigator.of(_formKey.currentContext!);
       navState.pop();

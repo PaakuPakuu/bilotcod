@@ -25,7 +25,10 @@ class _PraticienPageState extends State<PraticienPage> {
   @override
   Widget build(BuildContext context) {
     _selectedDuration ??= durationInMinutesList.first;
-    final List<TimeOfDay> hours = _getHours(8, 18, _selectedDuration!);
+    final List<TimeOfDay> hours = _getHours(
+        _isToday(_selectedDate) ? DateTime.now().hour + 1 : 8,
+        18,
+        _selectedDuration!);
 
     return Scaffold(
       appBar: AppBar(
@@ -58,7 +61,16 @@ class _PraticienPageState extends State<PraticienPage> {
           ),
           Expanded(
             child: !context.watch<ApplicationState>().areRdvsLoading
-                ? _getListedHours(hours, context)
+                ? (hours.isNotEmpty
+                    ? _getListedHours(hours, context)
+                    : Container(
+                        margin: const EdgeInsets.all(20),
+                        child: const Center(
+                            child: Text(
+                          "Il n'est plus possible de prendre de rendez-vous aujourd'hui",
+                          textAlign: TextAlign.center,
+                        )),
+                      ))
                 : const Center(child: CircularProgressIndicator()),
           ),
         ],
@@ -80,7 +92,9 @@ class _PraticienPageState extends State<PraticienPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               MyDatePicker(onDateSelected: (DateTime date) {
-                _selectedDate = date;
+                setState(() {
+                  _selectedDate = date;
+                });
               }),
               const SizedBox(width: 20),
               _getDurationDropdown(_selectedDuration, durationInMinutesList),
@@ -99,30 +113,44 @@ class _PraticienPageState extends State<PraticienPage> {
                 margin: const EdgeInsets.all(5),
                 height: 40,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AppointmentForm(
-                            rdv: Rdv(
-                                widget.praticien,
-                                DateTime(
-                                    _selectedDate.year,
-                                    _selectedDate.month,
-                                    _selectedDate.day,
-                                    hour.hour,
-                                    hour.minute),
-                                _selectedDuration!,
-                                false)),
-                      ),
-                    );
-                  },
+                  onPressed: widget.praticien.rdvs
+                          .where((rdv) => _isHourOverlappingRdv(rdv, hour))
+                          .isNotEmpty
+                      ? null
+                      : () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AppointmentForm(
+                                  rdv: Rdv(
+                                      widget.praticien,
+                                      DateTime(
+                                          _selectedDate.year,
+                                          _selectedDate.month,
+                                          _selectedDate.day,
+                                          hour.hour,
+                                          hour.minute),
+                                      _selectedDuration!,
+                                      false)),
+                            ),
+                          ),
                   child: Text(hour.format(context),
                       style: const TextStyle(fontSize: 16)),
                 ),
               ))
           .toList(),
     );
+  }
+
+  bool _isHourOverlappingRdv(Rdv rdv, TimeOfDay time) {
+    final DateTime rdvStart = rdv.datetime;
+    final DateTime rdvEnd =
+        rdvStart.add(Duration(minutes: rdv.durationMinutes - 1));
+    final DateTime hourStart = DateTime(_selectedDate.year, _selectedDate.month,
+        _selectedDate.day, time.hour, time.minute);
+    final DateTime hourEnd =
+        hourStart.add(Duration(minutes: _selectedDuration!));
+
+    return !(hourEnd.isBefore(rdvStart) || hourStart.isAfter(rdvEnd));
   }
 
   List<TimeOfDay> _getHours(int startHour, int endHour, int duration) {
@@ -169,5 +197,12 @@ class _PraticienPageState extends State<PraticienPage> {
         subtitle: Text(widget.praticien.specialite),
       ),
     );
+  }
+
+  bool _isToday(DateTime date) {
+    final DateTime now = DateTime.now();
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
   }
 }
