@@ -41,9 +41,7 @@ class _PraticienPageState extends State<PraticienPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   MyDatePicker(onDateSelected: (DateTime date) {
-                    setState(() {
-                      _selectedDate = date;
-                    });
+                    _selectedDate = date;
                   }),
                   const SizedBox(width: 20),
                   _getDurationDropdown(
@@ -87,15 +85,8 @@ class _PraticienPageState extends State<PraticienPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => AppointmentForm(
-                            rdv: Rdv(
-                                date: DateTime(
-                                  _selectedDate.year,
-                                  _selectedDate.month,
-                                  _selectedDate.day,
-                                  hour.hour,
-                                  hour.minute,
-                                ),
-                                durationInMinutes: _selectedDuration!)),
+                            rdv: Rdv(widget.praticien, _selectedDate,
+                                _selectedDuration!, false)),
                       ),
                     );
                   },
@@ -134,7 +125,7 @@ class _PraticienPageState extends State<PraticienPage> {
           .toList(),
       onChanged: (int? value) {
         setState(() {
-          this._selectedDuration = value!;
+          _selectedDuration = value!;
         });
       },
       hint: const Text('Durée'),

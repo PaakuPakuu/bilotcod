@@ -2,7 +2,6 @@ import 'package:bilotcode_praticien/app_state.dart';
 import 'package:bilotcode_praticien/pages/detail_rdv_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
 import '../models/rdv.dart';

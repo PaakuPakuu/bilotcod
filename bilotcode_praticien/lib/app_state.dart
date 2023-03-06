@@ -29,7 +29,6 @@ class ApplicationState extends ChangeNotifier {
     await _loadPraticiens().then((value) async => await loadRdvs());
   }
 
-  /// Charge les rendez-vous du jour du praticien sélectionné
   Future<void> loadRdvs() async {
     areRdvsLoading = true;
     _rdvs.clear();
