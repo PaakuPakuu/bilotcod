@@ -98,14 +98,23 @@ class ApplicationState extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<DocumentReference<Object?>> _getDocReference(
+      String collection, String id) async {
+    return await FirebaseFirestore.instance
+        .collection(collection)
+        .doc(id)
+        .get()
+        .then((value) => value.reference);
+  }
+
   Future<void> addRdv(Rdv rdv) async {
     await FirebaseFirestore.instance.collection('rdvs').add({
       'commentaire': rdv.commentaire,
       'datetime': rdv.datetime,
       'duree_min': rdv.durationMinutes,
       'est_annule': rdv.isCancelled,
-      'patient': 'patients/${rdv.patient?.id}',
-      'praticien': 'praticiens/${rdv.praticien.id}',
+      'patient': await _getDocReference('patients', rdv.patient!.id!),
+      'praticien': await _getDocReference('praticiens', rdv.praticien.id)
     });
   }
 

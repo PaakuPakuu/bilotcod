@@ -1,4 +1,6 @@
+import 'package:bilotcod_patient/app_state.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../models/praticien.dart';
 import '../models/rdv.dart';
@@ -34,40 +36,57 @@ class _PraticienPageState extends State<PraticienPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             _getPraticienCard(),
-            Card(
-              margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
-              elevation: 5,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  MyDatePicker(onDateSelected: (DateTime date) {
-                    _selectedDate = date;
-                  }),
-                  const SizedBox(width: 20),
-                  _getDurationDropdown(
-                      _selectedDuration, durationInMinutesList),
-                ],
-              ),
-            ),
+            _getSelectDateCard(),
             Flexible(
-              child: Card(
-                margin: const EdgeInsets.all(20),
-                elevation: 5,
-                child: Column(
-                  children: [
-                    const ListTile(
-                      leading: Icon(Icons.timer),
-                      title: Text('Sélectionnez une plage horaire'),
-                    ),
-                    Expanded(
-                      child: _getListedHours(hours, context),
-                    ),
-                  ],
-                ),
-              ),
+              child: _getSelectHourCard(context, hours),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Card _getSelectHourCard(BuildContext context, List<TimeOfDay> hours) {
+    return Card(
+      margin: const EdgeInsets.all(20),
+      elevation: 5,
+      child: Column(
+        children: [
+          const ListTile(
+            leading: Icon(Icons.timer),
+            title: Text('Sélectionnez une plage horaire'),
+          ),
+          Expanded(
+            child: !context.watch<ApplicationState>().areRdvsLoading
+                ? _getListedHours(hours, context)
+                : const Center(child: CircularProgressIndicator()),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Card _getSelectDateCard() {
+    return Card(
+      margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
+      elevation: 5,
+      child: Column(
+        children: [
+          const ListTile(
+            leading: Icon(Icons.calendar_today),
+            title: Text('Sélectionnez une date et une durée'),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              MyDatePicker(onDateSelected: (DateTime date) {
+                _selectedDate = date;
+              }),
+              const SizedBox(width: 20),
+              _getDurationDropdown(_selectedDuration, durationInMinutesList),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -85,8 +104,16 @@ class _PraticienPageState extends State<PraticienPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => AppointmentForm(
-                            rdv: Rdv(widget.praticien, _selectedDate,
-                                _selectedDuration!, false)),
+                            rdv: Rdv(
+                                widget.praticien,
+                                DateTime(
+                                    _selectedDate.year,
+                                    _selectedDate.month,
+                                    _selectedDate.day,
+                                    hour.hour,
+                                    hour.minute),
+                                _selectedDuration!,
+                                false)),
                       ),
                     );
                   },
@@ -135,7 +162,7 @@ class _PraticienPageState extends State<PraticienPage> {
   Card _getPraticienCard() {
     return Card(
       margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
-      elevation: 5,
+      elevation: 2,
       child: ListTile(
         leading: const Icon(Icons.person),
         title: Text('Dr. ${widget.praticien.nom} ${widget.praticien.prenom}'),

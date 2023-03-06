@@ -37,11 +37,21 @@ class _AppointmentFormState extends State<AppointmentForm> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
+              Center(
+                  child: Text(
+                      'Vous êtes ${context.watch<ApplicationState>().loggedIn ? 'connecté' : 'déconnecté'}')),
               if (context.watch<ApplicationState>().loggedIn)
                 _getLoggedInPatientCard(),
-              context.watch<ApplicationState>().loggedIn
-                  ? _getLoggedInForm()
-                  : _getNotLoggedInForm(),
+              if (context.watch<ApplicationState>().loggedIn)
+                _getLoggedInForm()
+              else
+                Card(
+                    elevation: 5,
+                    margin: const EdgeInsets.all(10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: _getNotLoggedInForm(),
+                    )),
             ],
           ),
         ),
@@ -179,7 +189,8 @@ class _AppointmentFormState extends State<AppointmentForm> {
 
   Future<void> _validateAndSend() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final patient = Patient(_name!, _firstName!, _age!, _selectedSexe!);
+      final patient = Patient(
+          _name!, _firstName!, _age!, _selectedSexe! == 'Femme' ? 'F' : 'M');
       widget.rdv.commentaire = _comment;
 
       final appState = context.read<ApplicationState>();
@@ -188,7 +199,9 @@ class _AppointmentFormState extends State<AppointmentForm> {
       widget.rdv.patient = patient;
       await appState.addRdv(widget.rdv);
 
-      Navigator.of(_formKey.currentContext!).pop();
+      final navState = Navigator.of(_formKey.currentContext!);
+      navState.pop();
+      navState.pop();
     }
   }
 

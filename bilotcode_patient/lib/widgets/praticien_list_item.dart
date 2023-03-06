@@ -9,7 +9,7 @@ class PraticienListItem extends ListTile {
     required Function onTap,
   }) : super(
           leading: const Icon(Icons.person),
-          title: Text(praticien.nom),
+          title: Text('Dr. ${praticien.nom} ${praticien.prenom}'),
           subtitle: Text(praticien.specialite),
           onTap: () => onTap(praticien),
           trailing: const Icon(Icons.arrow_forward_ios),
