@@ -2,8 +2,12 @@
 
 import 'package:flutter/material.dart';
 
+import '../models/rdv.dart';
+
 class AppointmentForm extends StatefulWidget {
-  const AppointmentForm({super.key});
+  final Rdv rdv;
+
+  const AppointmentForm({super.key, required this.rdv});
 
   @override
   State<AppointmentForm> createState() => _AppointmentFormState();
@@ -23,7 +27,7 @@ class _AppointmentFormState extends State<AppointmentForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Prendre rendez-vous'),
+        title: const Text('Vos informations'),
       ),
       body: SingleChildScrollView(
         child: Container(
