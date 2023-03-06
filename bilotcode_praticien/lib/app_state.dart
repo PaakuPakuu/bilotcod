@@ -18,7 +18,14 @@ class ApplicationState extends ChangeNotifier {
 
   get rdvs => _rdvs;
   get praticiens => _praticiens;
-  Praticien? selectedPraticien;
+  Praticien? _selectedPraticien;
+
+  Praticien? get selectedPraticien => _selectedPraticien;
+
+  set selectedPraticien(Praticien? value) {
+    _selectedPraticien = value;
+    notifyListeners();
+  }
 
   get selectedPraticienRdvs => selectedPraticien?.rdvs ?? [];
 
@@ -74,7 +81,6 @@ class ApplicationState extends ChangeNotifier {
           .where((rdv) => rdv.praticien.id == praticien.id)
           .toList(growable: false);
     }
-    notifyListeners();
   }
 
   Future<void> removeRdv(Rdv rdv) async {
