@@ -167,14 +167,7 @@ class _AppointmentFormState extends State<AppointmentForm> {
           const SizedBox(height: 20),
           Center(
             child: ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState?.validate() ?? false) {
-                  // Envoyer les données du formulaire
-                  final patient =
-                      Patient(_name!, _firstName!, _age!, _selectedSexe!);
-                  widget.rdv.patient = patient;
-                }
-              },
+              onPressed: _validateAndSend,
               child: const Text('Prendre rendez-vous',
                   style: TextStyle(fontSize: 20)),
             ),
@@ -182,6 +175,21 @@ class _AppointmentFormState extends State<AppointmentForm> {
         ],
       ),
     );
+  }
+
+  Future<void> _validateAndSend() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      final patient = Patient(_name!, _firstName!, _age!, _selectedSexe!);
+      widget.rdv.commentaire = _comment;
+
+      final appState = context.read<ApplicationState>();
+      String newPatientId = await appState.addPatient(patient);
+      patient.id = newPatientId;
+      widget.rdv.patient = patient;
+      await appState.addRdv(widget.rdv);
+
+      Navigator.of(_formKey.currentContext!).pop();
+    }
   }
 
   Form _getLoggedInForm() {

@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'firebase_options.dart';
+import 'models/patient.dart';
 import 'models/praticien.dart';
 import 'models/rdv.dart';
 
@@ -95,5 +96,32 @@ class ApplicationState extends ChangeNotifier {
           .toList(growable: false);
     }
     notifyListeners();
+  }
+
+  Future<void> addRdv(Rdv rdv) async {
+    await FirebaseFirestore.instance.collection('rdvs').add({
+      'commentaire': rdv.commentaire,
+      'datetime': rdv.datetime,
+      'duree_min': rdv.durationMinutes,
+      'est_annule': rdv.isCancelled,
+      'patient': 'patients/${rdv.patient?.id}',
+      'praticien': 'praticiens/${rdv.praticien.id}',
+    });
+  }
+
+  Future<void> cancelRdv(Rdv rdv) async {
+    await FirebaseFirestore.instance
+        .collection('rdvs')
+        .doc(rdv.id)
+        .update({'est_annule': true});
+  }
+
+  Future<String> addPatient(Patient patient) async {
+    return await FirebaseFirestore.instance.collection('patients').add({
+      'nom': patient.nom,
+      'prenom': patient.prenom,
+      'sexe': patient.sexe,
+      'age': patient.age,
+    }).then((value) => value.id);
   }
 }
